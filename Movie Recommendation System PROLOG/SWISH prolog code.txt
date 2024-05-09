@@ -1,0 +1,50 @@
+% Facts: Movie titles and their genres
+movie_genre("Inception", "Sci-Fi").
+movie_genre("Inception", "Action").
+movie_genre("The Matrix", "Sci-Fi").
+movie_genre("The Matrix", "Action").
+movie_genre("The Dark Knight", "Action").
+movie_genre("The Dark Knight", "Crime").
+movie_genre("Interstellar", "Sci-Fi").
+movie_genre("Interstellar", "Adventure").
+movie_genre("Pulp Fiction", "Crime").
+movie_genre("Pulp Fiction", "Drama").
+
+% Facts: User preferences (likes)
+likes("Alice", "Inception").
+likes("Alice", "Interstellar").
+likes("Bob", "The Matrix").
+likes("Bob", "The Dark Knight").
+likes("Charlie", "Pulp Fiction").
+likes("Charlie", "The Dark Knight").
+
+% Rule: Recommend multiple movies to a user based on shared genres
+recommend(User, RecommendedMovies) :-
+    setof(Movie, recommend_single(User, Movie), RecommendedMovies).
+
+% Helper rule: Recommend a single movie to a user based on shared genres
+recommend_single(User, Movie) :-
+    likes(User, LikedMovie),
+    movie_genre(LikedMovie, Genre),
+    movie_genre(Movie, Genre),
+    Movie \= LikedMovie,
+    \+ likes(User, Movie).
+
+% Query examples
+% Example query: Recommend movies to Alice
+% ?- recommend("Alice", RecommendedMovies).
+
+
+% Query examples
+% Example query: Recommend movies to Alice
+% ?- recommend("Alice", Movie).
+%Input: The rule takes two arguments: User (representing the user for whom we want to recommend movies) and Movie (the movie that is being recommended).
+
+%Finding Liked Movies: First, the rule checks the user's liked movies by querying the likes/2 predicate. It retrieves a movie (LikedMovie) that the user has already liked.
+
+%Genre Matching: Next, the rule checks for movies (Movie) that have the same genre as the liked movie (LikedMovie). It does this by querying the movie_genre/2 predicate to find the genres of both the liked movie and the potential recommended movie.
+
+%Exclusion: The rule ensures that the recommended movie is not the same as the liked movie (Movie \= LikedMovie) to avoid recommending a movie that the user has already liked.
+
+%Recommendation: Finally, the rule checks if the user has not already liked the recommended movie (\+ likes(User, Movie)). If all conditions are met, the recommended movie is successfully found and returned.
+
